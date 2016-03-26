@@ -98,6 +98,7 @@ function createPuck(engine, x, y) {
 function update(game) {
     updatePaddleA(game);
     updatePaddleB(game);
+    updatePuck(game);
 }
 
 function updatePaddleA(game) {
@@ -141,4 +142,22 @@ function updatePaddleB(game) {
         var offset = (config.canvas.width - 40) - paddleB.position.x;
         Body.applyForce(paddleB, paddleB.position, {x: offset * 0.05, y: 0});
     }
+}
+
+function updatePuck(game) {
+    var puck = game.puck;
+    if (puck.position.x < -30) {
+        resetPuck(puck);
+    }
+    if (puck.position.x > config.canvas.width + 30) {
+        resetPuck(puck);
+    }
+}
+
+function resetPuck(puck) {
+    Body.setVelocity(puck, {x: 0, y: 0});
+    Body.setPosition(puck, {
+        x: config.canvas.width / 2,
+        y: config.canvas.height / 2
+    });
 }
