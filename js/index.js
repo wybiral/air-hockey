@@ -27,6 +27,9 @@ window.onload = function() {
     // Create game objects
     createObjects(game);
 
+    // Create neural network
+    game.network = new synaptic.Architect.Perceptron(10, 30, 4);
+
     // Maintain keyboard state
     var keyStates = {};
     game.keyStates = keyStates;
