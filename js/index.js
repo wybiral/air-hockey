@@ -24,11 +24,16 @@ window.onload = function() {
     // Create shapes for walls
     createWalls(engine);
 
-    // Create the paddles
+    // Grab dimensions from config
     var w = config.canvas.width;
     var h = config.canvas.height;
+
+    // Create the paddles
     var paddleA = createPaddle(engine, 100, h / 2);
     var paddleB = createPaddle(engine, w - 100, h / 2);
+
+    // Create the puck
+    var puck = createPuck(engine, w / 2, h / 2);
 
     // run the engine
     Engine.run(engine);
@@ -63,6 +68,16 @@ function createPaddle(engine, x, y) {
     body.mass = 100;
     body.frictionAir = 0.15;
     body.render.fillStyle = config.paddles.color;
+    body.render.strokeStyle = body.render.fillStyle;
+    World.add(engine.world, [body]);
+    return body;
+}
+
+function createPuck(engine, x, y) {
+    var body = Bodies.circle(x, y, 30);
+    body.restitution = 1;
+    body.frictionAir = 0.001;
+    body.render.fillStyle = config.puck.color;
     body.render.strokeStyle = body.render.fillStyle;
     World.add(engine.world, [body]);
     return body;

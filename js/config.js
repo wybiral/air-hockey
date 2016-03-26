@@ -16,4 +16,8 @@ var config = {
         color: '#79f'
     },
 
+    puck: {
+        color: '#f77'
+    }
+
 };
