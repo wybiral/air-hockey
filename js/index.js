@@ -35,6 +35,15 @@ window.onload = function() {
     // Create the puck
     var puck = createPuck(engine, w / 2, h / 2);
 
+    // Maintain keyboard state
+    var keyStates = {};
+    document.onkeydown = function(evt) {
+        keyStates[evt.keyCode] = true;
+    };
+    document.onkeyup = function(evt) {
+        delete keyStates[evt.keyCode];
+    };
+
     // run the engine
     Engine.run(engine);
 
