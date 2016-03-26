@@ -24,6 +24,12 @@ window.onload = function() {
     // Create shapes for walls
     createWalls(engine);
 
+    // Create the paddles
+    var w = config.canvas.width;
+    var h = config.canvas.height;
+    var paddleA = createPaddle(engine, 100, h / 2);
+    var paddleB = createPaddle(engine, w - 100, h / 2);
+
     // run the engine
     Engine.run(engine);
 
@@ -46,7 +52,17 @@ function createWalls(engine) {
 
 function createWall(engine, x, y, w, h) {
     var body = Bodies.rectangle(x, y, w, h, {isStatic: true});
-    body.render.fillStyle = '#aaa';
+    body.render.fillStyle = config.walls.color;
+    body.render.strokeStyle = body.render.fillStyle;
+    World.add(engine.world, [body]);
+    return body;
+}
+
+function createPaddle(engine, x, y) {
+    var body = Bodies.circle(x, y, 40);
+    body.mass = 100;
+    body.frictionAir = 0.15;
+    body.render.fillStyle = config.paddles.color;
     body.render.strokeStyle = body.render.fillStyle;
     World.add(engine.world, [body]);
     return body;
