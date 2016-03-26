@@ -29,6 +29,8 @@ window.onload = function() {
 
     // Create neural network
     game.network = new synaptic.Architect.Perceptron(10, 30, 4);
+    // Training data for network
+    game.trainData = [];
 
     // Maintain keyboard state
     var keyStates = {};
@@ -40,6 +42,7 @@ window.onload = function() {
         delete keyStates[evt.keyCode];
     };
 
+    // Listen for update event
     Events.on(engine, 'beforeUpdate', function(evt) {
         update(game);
     });
@@ -99,28 +102,62 @@ function createPuck(engine, x, y) {
 }
 
 function update(game) {
+    if (game.keyStates[32]) {
+        delete game.keyStates[32];
+        randomizeGame(game);
+    }
+
     updatePaddleA(game);
     updatePaddleB(game);
     updatePuck(game);
+}
+
+function randomizeGame(game) {
+    var w = config.canvas.width;
+    var h = config.canvas.height;
+    Body.setPosition(game.paddleA, {
+        x: Math.random() * w / 2,
+        y: Math.random() * h
+    });
+    Body.setPosition(game.paddleB, {
+        x: w - Math.random() * w / 2,
+        y: Math.random() * h
+    });
+    Body.setPosition(game.puck, {
+        x: Math.random() * w,
+        y: Math.random() * h
+    });
+    Body.setVelocity(game.puck, {
+        x: Math.random() * 20 - 10,
+        y: Math.random() * 20 - 10
+    });
 }
 
 function updatePaddleA(game) {
     var f = 0.5;
     var force = {x: 0, y: 0};
     var paddleA = game.paddleA;
+    var directions = [0, 0, 0, 0];
     if (game.keyStates[38]) {
         force.y -= f;
+        directions[0] = 1;
     }
     if (game.keyStates[39]) {
         force.x += f;
+        directions[1] = 1;
     }
     if (game.keyStates[40]) {
         force.y += f;
+        directions[2] = 1;
     }
     if (game.keyStates[37]) {
         force.x -= f;
+        directions[3] = 1;
     }
-    Body.applyForce(paddleA, paddleA.position, force);
+    if (directions[0] || directions[1] || directions[2] || directions[3]) {
+        pushTrainSample(game, directions);
+        Body.applyForce(paddleA, paddleA.position, force);
+    }
     if (paddleA.position.x > config.canvas.width / 2 - 40) {
         // Keep paddle on correct side
         var offset = (config.canvas.width / 2 - 40) - paddleA.position.x;
@@ -130,6 +167,33 @@ function updatePaddleA(game) {
         // Keep paddle out of goal
         var offset = 40 - paddleA.position.x;
         Body.applyForce(paddleA, paddleA.position, {x: offset * 0.05, y: 0});
+    }
+}
+
+function pushTrainSample(game, directions) {
+    var w = config.canvas.width;
+    var h = config.canvas.height;
+    var vScale = 0.1;
+    var paddleA = game.paddleA;
+    var paddleB = game.paddleB;
+    var puck = game.puck;
+    var inputs = [
+        puck.position.x > paddleA.position.x ? 1 : 0,
+        puck.position.y > paddleA.position.y ? 1 : 0,
+        2 * paddleA.position.x / w - 1,
+        2 * paddleA.position.y / h - 1,
+        2 * paddleB.position.x / w - 1,
+        2 * paddleB.position.y / h - 1,
+        2 * puck.position.x / w - 1,
+        2 * puck.position.y / h - 1,
+        puck.velocity.x * vScale,
+        puck.velocity.y * vScale
+    ];
+    game.trainData.push([inputs, directions]);
+    while (game.trainData.length > 1000000) {
+        // Only remember a max of 1M samples at a time
+        var index = (Math.random() * game.trainData.length) | 0;
+        game.trainData.splice(index, 1);
     }
 }
 
@@ -150,17 +214,9 @@ function updatePaddleB(game) {
 function updatePuck(game) {
     var puck = game.puck;
     if (puck.position.x < -30) {
-        resetPuck(puck);
+        randomizeGame(game);
     }
     if (puck.position.x > config.canvas.width + 30) {
-        resetPuck(puck);
+        randomizeGame(game);
     }
-}
-
-function resetPuck(puck) {
-    Body.setVelocity(puck, {x: 0, y: 0});
-    Body.setPosition(puck, {
-        x: config.canvas.width / 2,
-        y: config.canvas.height / 2
-    });
 }
