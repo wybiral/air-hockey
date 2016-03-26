@@ -212,7 +212,41 @@ function updateNetwork(game) {
 }
 
 function updatePaddleB(game) {
+    var w = config.canvas.width;
+    var h = config.canvas.height;
+    var vScale = 0.1;
+    var paddleA = game.paddleA;
     var paddleB = game.paddleB;
+    var puck = game.puck;
+    var inputs = [
+        puck.position.x < paddleB.position.x ? 1 : 0,
+        puck.position.y > paddleB.position.y ? 1 : 0,
+        -(2 * paddleB.position.x / w - 1),
+        2 * paddleB.position.y / h - 1,
+        -(2 * paddleA.position.x / w - 1),
+        2 * paddleA.position.y / h - 1,
+        -(2 * puck.position.x / w - 1),
+        2 * puck.position.y / h - 1,
+        -puck.velocity.x * vScale,
+        puck.velocity.y * vScale
+    ];
+    var directions = game.network.activate(inputs);
+    var f = 0.5;
+    var force = {x: 0, y: 0};
+    if (directions[0] > 0.9) {
+        force.y -= f;
+    }
+    if (directions[3] > 0.9) {
+        force.x += f;
+    }
+    if (directions[2] > 0.9) {
+        force.y += f;
+    }
+    if (directions[1] > 0.9) {
+        force.x -= f;
+    }
+    Body.applyForce(paddleB, paddleB.position, force);
+
     if (paddleB.position.x < config.canvas.width / 2 + 40) {
         // Keep paddle on correct side
         var offset = (config.canvas.width / 2 + 40) - paddleB.position.x;
