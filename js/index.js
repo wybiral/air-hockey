@@ -6,6 +6,8 @@ var Bodies = Matter.Bodies;
 
 window.onload = function() {
 
+    var game = {};
+
     // Create instance of matter.js engine
     var engine = Engine.create({
         render: {
@@ -17,6 +19,7 @@ window.onload = function() {
             }
         }
     });
+    game.engine = engine;
 
     // Disable gravity
     engine.world.gravity.y = 0;
@@ -29,20 +32,25 @@ window.onload = function() {
     var h = config.canvas.height;
 
     // Create the paddles
-    var paddleA = createPaddle(engine, 100, h / 2);
-    var paddleB = createPaddle(engine, w - 100, h / 2);
+    game.paddleA = createPaddle(engine, 100, h / 2);
+    game.paddleB = createPaddle(engine, w - 100, h / 2);
 
     // Create the puck
-    var puck = createPuck(engine, w / 2, h / 2);
+    game.puck = createPuck(engine, w / 2, h / 2);
 
     // Maintain keyboard state
     var keyStates = {};
+    game.keyStates = keyStates;
     document.onkeydown = function(evt) {
         keyStates[evt.keyCode] = true;
     };
     document.onkeyup = function(evt) {
         delete keyStates[evt.keyCode];
     };
+
+    Events.on(engine, 'beforeUpdate', function(evt) {
+        update(game);
+    });
 
     // run the engine
     Engine.run(engine);
@@ -90,4 +98,7 @@ function createPuck(engine, x, y) {
     body.render.strokeStyle = body.render.fillStyle;
     World.add(engine.world, [body]);
     return body;
+}
+
+function update(game) {
 }
