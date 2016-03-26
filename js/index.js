@@ -96,8 +96,14 @@ function createPuck(engine, x, y) {
 }
 
 function update(game) {
+    updatePaddleA(game);
+    updatePaddleB(game);
+}
+
+function updatePaddleA(game) {
     var f = 0.5;
     var force = {x: 0, y: 0};
+    var paddleA = game.paddleA;
     if (game.keyStates[38]) {
         force.y -= f;
     }
@@ -110,5 +116,29 @@ function update(game) {
     if (game.keyStates[37]) {
         force.x -= f;
     }
-    Body.applyForce(game.paddleA, game.paddleA.position, force);
+    Body.applyForce(paddleA, paddleA.position, force);
+    if (paddleA.position.x > config.canvas.width / 2 - 40) {
+        // Keep paddle on correct side
+        var offset = (config.canvas.width / 2 - 40) - paddleA.position.x;
+        Body.applyForce(paddleA, paddleA.position, {x: offset * 0.05, y: 0});
+    }
+    if (paddleA.position.x < 40) {
+        // Keep paddle out of goal
+        var offset = 40 - paddleA.position.x;
+        Body.applyForce(paddleA, paddleA.position, {x: offset * 0.05, y: 0});
+    }
+}
+
+function updatePaddleB(game) {
+    var paddleB = game.paddleB;
+    if (paddleB.position.x < config.canvas.width / 2 + 40) {
+        // Keep paddle on correct side
+        var offset = (config.canvas.width / 2 + 40) - paddleB.position.x;
+        Body.applyForce(paddleB, paddleB.position, {x: offset * 0.05, y: 0});
+    }
+    if (paddleB.position.x > config.canvas.width - 40) {
+        // Keep paddle out of goal
+        var offset = (config.canvas.width - 40) - paddleB.position.x;
+        Body.applyForce(paddleB, paddleB.position, {x: offset * 0.05, y: 0});
+    }
 }
