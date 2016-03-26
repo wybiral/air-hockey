@@ -24,19 +24,8 @@ window.onload = function() {
     // Disable gravity
     engine.world.gravity.y = 0;
 
-    // Create shapes for walls
-    createWalls(engine);
-
-    // Grab dimensions from config
-    var w = config.canvas.width;
-    var h = config.canvas.height;
-
-    // Create the paddles
-    game.paddleA = createPaddle(engine, 100, h / 2);
-    game.paddleB = createPaddle(engine, w - 100, h / 2);
-
-    // Create the puck
-    game.puck = createPuck(engine, w / 2, h / 2);
+    // Create game objects
+    createObjects(game);
 
     // Maintain keyboard state
     var keyStates = {};
@@ -57,7 +46,8 @@ window.onload = function() {
 
 };
 
-function createWalls(engine) {
+function createObjects(game) {
+    var engine = game.engine;
     var w = config.canvas.width;
     var h = config.canvas.height;
     // Top
@@ -70,6 +60,11 @@ function createWalls(engine) {
     // Right
     createWall(engine, w - 5, 65, 10, 110);
     createWall(engine, w - 5, h - 64, 10, 110);
+    // Create the paddles
+    game.paddleA = createPaddle(engine, 100, h / 2);
+    game.paddleB = createPaddle(engine, w - 100, h / 2);
+    // Create the puck
+    game.puck = createPuck(engine, w / 2, h / 2);
 }
 
 function createWall(engine, x, y, w, h) {
