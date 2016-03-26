@@ -96,4 +96,19 @@ function createPuck(engine, x, y) {
 }
 
 function update(game) {
+    var f = 0.5;
+    var force = {x: 0, y: 0};
+    if (game.keyStates[38]) {
+        force.y -= f;
+    }
+    if (game.keyStates[39]) {
+        force.x += f;
+    }
+    if (game.keyStates[40]) {
+        force.y += f;
+    }
+    if (game.keyStates[37]) {
+        force.x -= f;
+    }
+    Body.applyForce(game.paddleA, game.paddleA.position, force);
 }
