@@ -107,6 +107,7 @@ function update(game) {
         randomizeGame(game);
     }
 
+    updateNetwork(game);
     updatePaddleA(game);
     updatePaddleB(game);
     updatePuck(game);
@@ -194,6 +195,19 @@ function pushTrainSample(game, directions) {
         // Only remember a max of 1M samples at a time
         var index = (Math.random() * game.trainData.length) | 0;
         game.trainData.splice(index, 1);
+    }
+}
+
+function updateNetwork(game) {
+    var network = game.network;
+    var trainData = game.trainData;
+    var n = trainData.length;
+    if (n > 1000) {
+        for (var i = 0; i < 1000; i++) {
+            var index = (Math.random() * n) | 0;
+            network.activate(trainData[index][0]);
+            network.propagate(0.1, trainData[index][1]);
+        }
     }
 }
 
