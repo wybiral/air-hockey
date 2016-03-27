@@ -11,7 +11,7 @@ window.onload = function() {
     // Create instance of matter.js engine
     var engine = Engine.create({
         render: {
-            element: document.body,
+            element: document.querySelector('body > main'),
             options: {
                 width: config.canvas.width,
                 height: config.canvas.height,
