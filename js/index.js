@@ -42,6 +42,16 @@ window.onload = function() {
         delete keyStates[evt.keyCode];
     };
 
+    // Load button
+    document.querySelector('#load-btn').onclick = function(evt) {
+        loadNetwork(game);
+    };
+
+    // Save button
+    document.querySelector('#save-btn').onclick = function(evt) {
+        saveNetwork(game);
+    };
+
     // Randomize button
     document.querySelector('#randomize-btn').onclick = function(evt) {
         randomizeGame(game);
@@ -56,6 +66,40 @@ window.onload = function() {
     Engine.run(engine);
 
 };
+
+/*
+"Upload" a file and load as a JSON synaptic network
+*/
+function loadNetwork(game) {
+    var input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.onchange = function(evt) {
+        var file = evt.target.files[0];
+        var reader = new FileReader();
+        reader.addEventListener('loadend', function (evt) {
+        if (evt.target.readyState == FileReader.DONE) {
+            var json = JSON.parse(evt.target.result);
+            console.log(json);
+            game.network = synaptic.Network.fromJSON(json);
+        }
+        });
+        reader.readAsText(file);
+    };
+    input.click();
+}
+
+/*
+Export a synaptic network as JSON and create "download" from it
+*/
+function saveNetwork(game) {
+    var blob = new Blob([JSON.stringify(game.network)]);
+    var a = document.createElement('a');
+    document.body.appendChild(a);
+    a.setAttribute('href', URL.createObjectURL(blob));
+    a.setAttribute('download', 'network.json');
+    a.click();
+    document.body.removeChild(a);
+}
 
 function createObjects(game) {
     var engine = game.engine;
