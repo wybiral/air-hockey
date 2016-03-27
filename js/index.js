@@ -42,6 +42,11 @@ window.onload = function() {
         delete keyStates[evt.keyCode];
     };
 
+    // Randomize button
+    document.querySelector('#randomize-btn').onclick = function(evt) {
+        randomizeGame(game);
+    };
+
     // Listen for update event
     Events.on(engine, 'beforeUpdate', function(evt) {
         update(game);
@@ -102,11 +107,6 @@ function createPuck(engine, x, y) {
 }
 
 function update(game) {
-    if (game.keyStates[32]) {
-        delete game.keyStates[32];
-        randomizeGame(game);
-    }
-
     updateNetwork(game);
     updatePaddleA(game);
     updatePaddleB(game);
