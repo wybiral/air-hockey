@@ -29,6 +29,15 @@ window.onload = function() {
 
     // Create neural network
     game.network = new synaptic.Architect.Perceptron(10, 30, 4);
+    // Set hidden activation function to TANH
+    var hiddenLayers = game.network.layers.hidden;
+    for (var i = 0; i < hiddenLayers.length; i++) {
+        var hidden = hiddenLayers[i].list;
+        for (var j = 0; j < hidden.length; j++) {
+            hidden[j].squash = synaptic.Neuron.squash.TANH;
+        }
+    }
+
     // Training data for network
     game.trainData = [];
 
@@ -79,7 +88,6 @@ function loadNetwork(game) {
         reader.addEventListener('loadend', function (evt) {
         if (evt.target.readyState == FileReader.DONE) {
             var json = JSON.parse(evt.target.result);
-            console.log(json);
             game.network = synaptic.Network.fromJSON(json);
         }
         });
@@ -223,8 +231,8 @@ function pushTrainSample(game, directions) {
     var paddleB = game.paddleB;
     var puck = game.puck;
     var inputs = [
-        puck.position.x > paddleA.position.x ? 1 : 0,
-        puck.position.y > paddleA.position.y ? 1 : 0,
+        (puck.position.x - paddleA.position.x) / w,
+        (puck.position.y - paddleA.position.y) / h,
         2 * paddleA.position.x / w - 1,
         2 * paddleA.position.y / h - 1,
         2 * paddleB.position.x / w - 1,
@@ -246,8 +254,8 @@ function updateNetwork(game) {
     var network = game.network;
     var trainData = game.trainData;
     var n = trainData.length;
-    if (n > 1000) {
-        for (var i = 0; i < 1000; i++) {
+    if (n > 100) {
+        for (var i = 0; i < 100; i++) {
             var index = (Math.random() * n) | 0;
             network.activate(trainData[index][0]);
             network.propagate(0.1, trainData[index][1]);
@@ -263,8 +271,8 @@ function updatePaddleB(game) {
     var paddleB = game.paddleB;
     var puck = game.puck;
     var inputs = [
-        puck.position.x < paddleB.position.x ? 1 : 0,
-        puck.position.y > paddleB.position.y ? 1 : 0,
+        -(puck.position.x - paddleB.position.x) / w,
+        (puck.position.y - paddleB.position.y) / h,
         -(2 * paddleB.position.x / w - 1),
         2 * paddleB.position.y / h - 1,
         -(2 * paddleA.position.x / w - 1),
