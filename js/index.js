@@ -169,16 +169,16 @@ function randomizeGame(game) {
     var w = config.canvas.width;
     var h = config.canvas.height;
     Body.setPosition(game.paddleA, {
-        x: Math.random() * w / 2,
-        y: Math.random() * h
+        x: Math.random() * (w / 2 - 20) + 10,
+        y: Math.random() * (h - 20) + 10
     });
     Body.setPosition(game.paddleB, {
-        x: w - Math.random() * w / 2,
-        y: Math.random() * h
+        x: w - Math.random() * (w / 2 - 20) + 10,
+        y: Math.random() * (h - 20) + 10
     });
     Body.setPosition(game.puck, {
-        x: Math.random() * w,
-        y: Math.random() * h
+        x: Math.random() * (w - 20) + 10,
+        y: Math.random() * (h - 20) + 10
     });
     Body.setVelocity(game.puck, {
         x: Math.random() * 20 - 10,
