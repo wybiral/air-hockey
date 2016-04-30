@@ -14,7 +14,7 @@
     </head>
     <body>
         <main></main>
-        <footer>
+        <div class="options">
             <div class="pull-left">
                 <button id="load-btn" title="Load network">Load</button>
                 <button id="save-btn" title="Save network">Save</button>
@@ -22,6 +22,12 @@
             <div class="pull-right">
                 <button id="randomize-btn" title="Randomize game positions">Randomize Game</button>
             </div>
+            <div class="clearfix"></div>
+        </div>
+        <footer>
+            <div>Use the arrow keys to move the paddle.</div>
+            <div>Your motion will be used to train a neural network which is controlling the opponent.</div>
+            <div>Periodically randomizing the game will ensure that the network is trained on a better sample of game scenarios.</div>
         </footer>
     </body>
 </html>

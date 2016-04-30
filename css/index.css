@@ -10,10 +10,21 @@ body > main > canvas {
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-body > footer {
+body > .options {
     width: 1000px;
     margin: 0 auto;
     font-size: 0;
+}
+
+body > footer {
+    box-sizing: border-box;
+    padding: 10px;
+    margin: 20px auto;
+    width: 1000px;
+    text-align: center;
+    color: #777;
+    background-color: #e7e7e7;
+    box-shadow: inset 0px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 button {
@@ -42,4 +53,8 @@ button + button {
 
 .pull-right {
     float: right;
+}
+
+.clearfix {
+    clear: both;
 }

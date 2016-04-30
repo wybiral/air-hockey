@@ -29,12 +29,12 @@ window.onload = function() {
 
     // Create neural network
     game.network = new synaptic.Architect.Perceptron(10, 30, 4);
-    // Set hidden activation function to TANH
-    var hiddenLayers = game.network.layers.hidden;
-    for (var i = 0; i < hiddenLayers.length; i++) {
-        var hidden = hiddenLayers[i].list;
-        for (var j = 0; j < hidden.length; j++) {
-            hidden[j].squash = synaptic.Neuron.squash.TANH;
+    // Set activation function to TANH
+    var layers = [game.network.layers.input].concat(game.network.layers.hidden);
+    for (var i = 0; i < layers.length; i++) {
+        var layer = layers[i].list;
+        for (var j = 0; j < layer.length; j++) {
+            layer[j].squash = synaptic.Neuron.squash.TANH;
         }
     }
 
